@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User</title>
+    <!-- Bootstrap CSS -->
+    <link href="admin/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Favicons -->
+    <link href="admin/assets/img/favicon.png" rel="icon">
+    <link href="admin/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="admin/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="admin/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="admin/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="admin/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="admin/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="admin/assets/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="admin_dashbord.html" class="logo d-flex align-items-center">
+                <img src="admin/assets/img/logo.png" alt="">
+                <span class="d-none d-lg-block">Admin</span>
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div><!-- End Logo -->
+
+        <div class="search-bar">
+            <form class="search-form d-flex align-items-center">
+                <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+            </form>
+        </div><!-- End Search Bar -->
+
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+
+                <li class="nav-item d-block d-lg-none">
+                    <a class="nav-link nav-icon search-bar-toggle " href="#">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </li><!-- End Search Icon-->
+            </ul>
+        </nav><!-- End Icons Navigation -->
+
+    </header><!-- End Header -->
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="admin_dashbord.html">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Admin Tools</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-circle"></i><span>Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="view_products.html">
+                            <i class="bi bi-circle"></i><span>Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="view_orders.html">
+                            <i class="bi bi-circle"></i><span>Orders</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </li><!-- End Admin Tools Nav -->
+
+        </ul><!-- End Sidebar Nav -->
+
+    </aside><!-- End Sidebar -->
+
+    <!-- Main Content -->
+    <main id="main" class="main">
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Edit User</h5>
+
+                            <!-- User Edit Form -->
+                            <form id="editUserForm">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="role" class="form-label">Role</label>
+                                    <select class="form-select" id="role" name="role" required>
+                                        <option value="admin">Admin</option>
+                                        <option value="user">User</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </form><!-- End User Edit Form -->
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main><!-- End #main -->
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Main JS -->
+    <script src="admin/assets/js/main.js"></script>
+
+    <!-- jQuery for Editing User -->
+    <script>
+        $(document).ready(function () {
+            // Get user ID from URL
+            var urlParams = new URLSearchParams(window.location.search);
+            var userId = urlParams.get('id');
+
+            // Fetch user details and populate the form
+            $.get('/users/' + userId, function (user) {
+                $('#email').val(user.email);
+                $('#username').val(user.username);
+                $('#phoneNumber').val(user.phoneNumber);
+                $('#role').val(user.role);
+            });
+
+            // Handle form submission for editing user
+            $('#editUserForm').submit(function (event) {
+                event.preventDefault();
+
+                var formData = {
+                    email: $('#email').val(),
+                    username: $('#username').val(),
+                    phoneNumber: $('#phoneNumber').val(),
+                    role: $('#role').val()
+                };
+
+                $.ajax({
+                    url: '/users/' + userId,
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (data) {
+                        alert('User updated successfully!');
+                        // Redirect to user list page
+                        window.location.href = 'view_users.html';
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert('An error occurred while updating the user. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

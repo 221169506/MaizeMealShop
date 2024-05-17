@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/carousel.css">
+    <link rel="stylesheet" href="css/carousel.rtl.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+
+    <style>
+        /* Navbar Brand */
+        .navbar-brand {
+            font-size: 1.5rem;
+        }
+
+        /* Navbar Links */
+        .navbar-nav .nav-link {
+            font-size: 1.2rem;
+        }
+
+        /* Navbar Toggler Icon */
+        .navbar-toggler-icon {
+            background-color: white;
+        }
+
+        /* Active Link */
+        .navbar-nav .nav-link.active {
+            font-weight: bold;
+        }
+
+        /* Search Input */
+        .form-control {
+            width: 300px;
+            /* Adjust width as needed */
+        }
+
+        /* Search Button */
+        .btn-outline-success {
+            margin-left: 10px;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 350px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            position: relative;
+
+        }
+
+        .title {
+            font-size: 28px;
+            color: royalblue;
+            font-weight: 600;
+            letter-spacing: -1px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 30px;
+        }
+
+        .title::before,
+        .title::after {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            left: 0px;
+            background-color: royalblue;
+        }
+
+        .title::before {
+            width: 18px;
+            height: 18px;
+            background-color: royalblue;
+        }
+
+        .title::after {
+            width: 18px;
+            height: 18px;
+            animation: pulse 1s linear infinite;
+        }
+
+        .message,
+        .signin {
+            color: rgba(88, 87, 87, 0.822);
+            font-size: 14px;
+        }
+
+        .signin {
+            text-align: center;
+        }
+
+        .signin a {
+            color: royalblue;
+        }
+
+        .signin a:hover {
+            text-decoration: underline royalblue;
+        }
+
+        .flex {
+            display: flex;
+            width: 100%;
+            gap: 6px;
+        }
+
+        .form label {
+            position: relative;
+        }
+
+        .form label .input {
+            width: 100%;
+            padding: 10px 10px 20px 10px;
+            outline: 0;
+            border: 1px solid rgba(105, 105, 105, 0.397);
+            border-radius: 10px;
+        }
+
+        .form label .input+span {
+            position: absolute;
+            left: 10px;
+            top: 15px;
+            color: grey;
+            font-size: 0.9em;
+            cursor: text;
+            transition: 0.3s ease;
+        }
+
+        .form label .input:placeholder-shown+span {
+            top: 15px;
+            font-size: 0.9em;
+        }
+
+        .form label .input:focus+span,
+        .form label .input:valid+span {
+            top: 30px;
+            font-size: 0.7em;
+            font-weight: 600;
+        }
+
+        .form label .input:valid+span {
+            color: green;
+        }
+
+        .submit {
+            border: none;
+            outline: none;
+            background-color: royalblue;
+            padding: 10px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            transform: .3s ease;
+        }
+
+        .submit:hover {
+            background-color: rgb(56, 90, 194);
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(0.9);
+                opacity: 1;
+            }
+
+            to {
+                transform: scale(1.8);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: #212529;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Maize Shop</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="register.html">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.html">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="all_product.html">Menu</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                    <a style="color: green;" class="nav-link" href="cart.html"><i class="bi bi-cart-fill fs-4"></i></a>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div>
+
+        <center>
+
+
+            <form class="form" id="userForm">
+                <p class="title">Register </p>
+                <p class="message">Signup now and get full access to our app. </p>
+                <div class="flex">
+                    <label>
+                        <input placeholder="" type="text" class="input" id="username" name="username" required>
+                        <span>Username</span>
+                    </label>
+
+                    <label>
+                        <input placeholder="" type="text" class="input" id="email" name="email" required>
+                        <span>Email</span>
+                    </label>
+                </div>
+
+                <label>
+                    <input placeholder="" type="text" class="input" id="phoneNumber" name="phoneNumber" required>
+                    <span>Phone Number</span>
+                </label>
+
+
+                <label>
+                    <input placeholder="" type="password" class="input" id="password" name="password" required>
+                    <span>Password</span>
+                </label>
+                <button class="submit" id="submitBtn">Submit</button>
+                <p class="signin">Already have an acount ? <a href="login.html">Signin</a> </p>
+            </form>
+        </center>
+    </div>
+
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('#submitBtn').click(function (event) {
+                // Prevent form from submitting normally
+                event.preventDefault();
+
+                // Check if all fields are filled out
+                var username = $('#username').val();
+                var email = $('#email').val();
+                var phoneNumber = $('#phoneNumber').val();
+                var password = $('#password').val();
+
+                if (!username || !email || !phoneNumber || !password) {
+                    // Display error message if any field is empty
+                    alert('Please fill out all fields');
+                    return;
+                }
+
+                // Get form data
+                var formData = {
+                    email: email,
+                    username: username,
+                    phoneNumber: phoneNumber,
+                    password: password
+                };
+
+                // Send form data using AJAX
+                $.ajax({
+                    type: 'POST',
+                    url: '/users/register',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        // Handle success response
+                        alert('User registered successfully');
+                        // Optionally, redirect to another page
+                        window.location.href = 'register.html';
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response
+                        alert('Failed to register user: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+</html>

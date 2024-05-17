@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="assets/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/carousel.css">
+    <link rel="stylesheet" href="css/carousel.rtl.css">
+    <link href="admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        /* Additional CSS for product grid */
+        /* Navbar Brand */
+        .navbar-brand {
+            font-size: 1.5rem;
+        }
+
+        /* Navbar Links */
+        .navbar-nav .nav-link {
+            font-size: 1.2rem;
+        }
+
+        /* Navbar Toggler Icon */
+        .navbar-toggler-icon {
+            background-color: white;
+        }
+
+        /* Active Link */
+        .navbar-nav .nav-link.active {
+            font-weight: bold;
+        }
+
+        /* Search Input */
+        .form-control {
+            width: 300px;
+            /* Adjust width as needed */
+        }
+
+        /* Search Button */
+        .btn-outline-success {
+            margin-left: 10px;
+        }
+
+
+        .product-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+
+
+        .product-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .product-image {
+            width: 200px;
+            /* Set to medium size */
+            height: auto;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-details {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            display: none;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .product-card:hover .product-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-add-to-cart {
+            margin-top: 10px;
+        }
+
+        h1.products-heading {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div id="navbarContainer"></div> <!-- Container for the navbar -->
+    </header>
+
+    <main>
+        <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+
+                    <img src="images/bg_picture.png" class="bd-placeholder-img"
+                        style="object-fit: cover; width: 100%; height: 100%; object-position: center" alt="">
+
+                    <div class="container">
+                        <div class="carousel-caption text-start">
+                            <!-- <h1>Example headline.</h1>
+                            <p>Some representative placeholder content for -->
+                            <!-- the first slide of the carousel.</p> -->
+                            <p><a class="btn btn-lg btn-primary" href="register.html">Sign up today</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+
+                    <img src="images/bg.png"
+                        style="object-fit: cover; width: 100%; height: 100%;object-position: center;" alt="">
+
+                    <div class="container">
+                        <div class="carousel-caption text-end">
+
+                            <p><a class="btn btn-lg btn-primary" href="all_product.html">Menu</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img src="images/back2.png"
+                        style="object-fit: cover; width: 100%; height: 100%; object-position: center;" alt="">
+                    <div class="container">
+                        <div class="carousel-caption text-end">
+                            <p><a class="btn btn-lg btn-primary" href="all_product.html">Menu</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog"
+            aria-labelledby="editProfileModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editProfileForm">
+                            <!-- Form fields for editing user details -->
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Enter email">
+                            </div>
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" name="username"
+                                    placeholder="Enter username">
+                            </div>
+                            <div class="form-group">
+                                <label for="phoneNumber">Phone Number</label>
+                                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
+                                    placeholder="Enter phone number">
+                            </div>
+                            <!-- Add more form fields for other user details if needed -->
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h1 class="products-heading">Products</h1>
+        <!-- Product container -->
+
+        <div class="container product-container" id="productContainer">
+
+            <!-- Product cards will be dynamically added here -->
+        </div>
+        <!-- End of product container -->
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="container">
+        <p class="float-end"><a href="#">Back to top</a></p>
+        <p>&copy;2024 Company, Inc. &middot; <a href="#">Privacy</a>
+            &middot; <a href="#">Terms</a></p>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        // Function to add a product to the cart
+        function addToCart(productId) {
+            $.post(`/cart/add?productId=${productId}`)
+                .done(function () {
+                    alert('Product added to cart successfully');
+                    // Refresh the cart items after adding a product
+                    fetchProducts();
+                })
+                .fail(function (xhr, status, error) {
+                    alert('Failed to add product to cart: ' + error);
+                });
+        }
+        $(document).ready(function () {
+            // Function to fetch and display products
+            function fetchProducts() {
+                $.get('/products', function (products) {
+                    var productContainer = $('#productContainer');
+                    productContainer.empty(); // Clear previous product list
+
+                    // Loop through each product and create a product card
+                    products.forEach(function (product) {
+                        var cardHtml = `
+                                <div class="product-card">
+                                    <img class="product-image" src="data:image/jpeg;base64,${product.base64Image}" alt="${product.name}">
+                                    <div class="product-details">
+                                        <h5>${product.name}</h5>
+                                        <p>Description: ${product.description}</p>
+                                        <p>Price: R${product.price}</p>
+                                        
+                                        <button class="btn btn-primary btn-add-to-cart" data-product-id="${product.productId}">Add to Cart</button>
+                                    </div>
+                                </div>`;
+                        productContainer.append(cardHtml);
+                    });
+
+                    // Add event listener for the "Add to Cart" button click event
+                    $(document).on('click', '.btn-add-to-cart', function () {
+                        var productId = $(this).data('product-id');
+                        addToCart(productId);
+                    });
+
+                });
+            }
+
+
+
+
+            // Function to determine if the user is logged in
+            function isLoggedIn() {
+                // Check if a user is logged in by retrieving the username from session storage
+                var loggedInUserName = sessionStorage.getItem("loggedInUser");
+                return loggedInUserName !== null; // Return true if a user is logged in, false otherwise
+            }
+
+            // Function to dynamically generate and display the appropriate navbar
+            function displayNavbar() {
+                // Define HTML for the logged-in and non-logged-in navbars
+                var loggedInNavbarHtml = `
+                    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="#">Maize Shop</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarCollapse">
+                                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="all_product.html">Products</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="cart.html">Cart</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="customer_order.html">My Orders</a>
+                                    </li>
+                                    
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="signOutLink" href="#" onclick="signOut()">Sign Out</a>
+                                    </li>
+                                </ul>
+                                <form class="d-flex">
+                                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-outline-success" type="submit">Search</button>
+                                </form>
+                                <a style="color: green;" class="nav-link" href="cart.html"><i class="bi bi-cart-fill fs-4"></i></a>
+
+                            </div>
+                        </div>
+                    </nav>`;
+
+                var nonLoggedInNavbarHtml = `
+                    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="#">Maize Shop</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarCollapse">
+                                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="register.html">Register</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="all_product.html">Menu</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="login.html">Login</a>
+                                    </li>
+                                   
+                                </ul>
+                                <form id="searchForm" class="d-flex">
+                                    <input type="search" class="form-control me-2" id="searchInput" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-outline-success" type="submit">Search</button>
+                                 
+                                </form>
+                                <a style="color: green;" class="nav-link" href="cart.html"><i class="bi bi-cart-fill fs-4"></i></a>
+
+                            </div>
+                        </div>
+                    </nav>`;
+
+                if (isLoggedIn()) {
+                    $('#navbarContainer').html(loggedInNavbarHtml);
+                } else {
+                    $('#navbarContainer').html(nonLoggedInNavbarHtml);
+                }
+            }
+
+            // Display the appropriate navbar when the page loads
+            displayNavbar();
+
+
+            // Fetch and display products when the page loads
+            fetchProducts();
+        });
+
+        function signOut() {
+            // Remove the username from session storage
+            sessionStorage.removeItem("loggedInUser");
+            // Redirect to the login page
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Submit form on modal for editing user profile
+            $('#editProfileForm').submit(function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Get form data
+                var formData = {
+                    email: $('#email').val(),
+                    username: $('#username').val(),
+                    phoneNumber: $('#phoneNumber').val(),
+                    password: $('#password').val(), // Add password field if needed
+                    role: $('#role').val() // Add role field if needed
+                    // Add more form fields as needed
+                };
+
+                // AJAX request to update user profile
+                $.ajax({
+                    type: 'PUT',
+                    url: '/users/{id}', // Replace {id} with the actual user ID
+                    data: JSON.stringify(formData), // Convert form data to JSON string
+                    contentType: 'application/json',
+                    success: function (response) {
+                        // Display success message in modal
+                        $('#editProfileModal .modal-body').html('<p>' + response + '</p>');
+                    },
+                    error: function (xhr, status, error) {
+                        // Display error message in modal
+                        $('#editProfileModal .modal-body').html('<p>Error: ' + error + '</p>');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

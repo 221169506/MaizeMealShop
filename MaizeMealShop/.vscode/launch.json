@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "MaizemealShopApplication",
+            "request": "launch",
+            "mainClass": "za.ac.tut.maizemeal_shop.MaizemealShopApplication",
+            "projectName": "maizemeal_shop"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MaizemealShopApplication<maizemeal_shop>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "za.ac.tut.MaizemealShopApplication",
+            "projectName": "maizemeal_shop",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=52080 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=maizemeal_shop"
+        }
+    ]
+}

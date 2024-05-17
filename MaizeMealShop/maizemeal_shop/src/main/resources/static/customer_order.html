@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Order Details</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+    <link href="admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="assets/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/carousel.css">
+    <link rel="stylesheet" href="css/carousel.rtl.css">
+    <style>
+        /* Add your CSS styles here */
+        /* Navbar Brand */
+        .navbar-brand {
+            font-size: 1.5rem;
+        }
+
+        /* Navbar Links */
+        .navbar-nav .nav-link {
+            font-size: 1.2rem;
+        }
+
+        /* Navbar Toggler Icon */
+        .navbar-toggler-icon {
+            background-color: white;
+        }
+
+        /* Active Link */
+        .navbar-nav .nav-link.active {
+            font-weight: bold;
+        }
+
+        /* Search Input */
+        .form-control {
+            width: 300px;
+            /* Adjust width as needed */
+        }
+
+        /* Search Button */
+        .btn-outline-success {
+            margin-left: 10px;
+        }
+
+        body {
+            color: #566787;
+            background: #f5f5f5;
+            font-family: 'Varela Round', sans-serif;
+            font-size: 13px;
+        }
+
+        .table-wrapper {
+            background: #fff;
+            padding: 20px 25px;
+            margin: 30px auto;
+            border-radius: 3px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+        }
+
+        .table-wrapper .btn {
+            float: right;
+            color: #333;
+            background-color: #fff;
+            border-radius: 3px;
+            border: none;
+            outline: none !important;
+            margin-left: 10px;
+        }
+
+        .table-wrapper .btn:hover {
+            color: #333;
+            background: #f2f2f2;
+        }
+
+        .table-wrapper .btn.btn-primary {
+            color: #fff;
+            background: #03A9F4;
+        }
+
+        .table-wrapper .btn.btn-primary:hover {
+            background: #03a3e7;
+        }
+
+        .table-title .btn {
+            font-size: 13px;
+            border: none;
+        }
+
+        .table-title .btn i {
+            float: left;
+            font-size: 21px;
+            margin-right: 5px;
+        }
+
+        .table-title .btn span {
+            float: left;
+            margin-top: 2px;
+        }
+
+        .table-title {
+            color: #fff;
+            background: #4b5366;
+            padding: 16px 25px;
+            margin: -20px -25px 10px;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .table-title h2 {
+            margin: 5px 0 0;
+            font-size: 24px;
+        }
+
+        .show-entries select.form-control {
+            width: 60px;
+            margin: 0 5px;
+        }
+
+        .table-filter .filter-group {
+            float: right;
+            margin-left: 15px;
+        }
+
+        .table-filter input,
+        .table-filter select {
+            height: 34px;
+            border-radius: 3px;
+            border-color: #ddd;
+            box-shadow: none;
+        }
+
+        .table-filter {
+            padding: 5px 0 15px;
+            border-bottom: 1px solid #e9e9e9;
+            margin-bottom: 5px;
+        }
+
+        .table-filter .btn {
+            height: 34px;
+        }
+
+        .table-filter label {
+            font-weight: normal;
+            margin-left: 10px;
+        }
+
+        .table-filter select,
+        .table-filter input {
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        .table-filter input {
+            width: 200px;
+            display: inline-block;
+        }
+
+        .filter-group select.form-control {
+            width: 110px;
+        }
+
+        .filter-icon {
+            float: right;
+            margin-top: 7px;
+        }
+
+        .filter-icon i {
+            font-size: 18px;
+            opacity: 0.7;
+        }
+
+        table.table tr th,
+        table.table tr td {
+            border-color: #e9e9e9;
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+
+        table.table tr th:first-child {
+            width: 60px;
+        }
+
+        table.table tr th:last-child {
+            width: 80px;
+        }
+
+        table.table-striped tbody tr:nth-of-type(odd) {
+            background-color: #fcfcfc;
+        }
+
+        table.table-striped.table-hover tbody tr:hover {
+            background: #f5f5f5;
+        }
+
+        table.table th i {
+            font-size: 13px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+
+        table.table td a {
+            font-weight: bold;
+            color: #566787;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        table.table td a:hover {
+            color: #2196F3;
+        }
+
+        table.table td a.view {
+            width: 30px;
+            height: 30px;
+            color: #2196F3;
+            border: 2px solid;
+            border-radius: 30px;
+            text-align: center;
+        }
+
+        table.table td a.view i {
+            font-size: 22px;
+            margin: 2px 0 0 1px;
+        }
+
+        table.table .avatar {
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .status {
+            font-size: 30px;
+            margin: 2px 2px 0 0;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 10px;
+        }
+
+        .text-success {
+            color: #10c469;
+        }
+
+        .text-info {
+            color: #62c9e8;
+        }
+
+        .text-warning {
+            color: #FFC107;
+        }
+
+        .text-danger {
+            color: #ff5b5b;
+        }
+
+        .pagination {
+            float: right;
+            margin: 0 0 5px;
+        }
+
+        .pagination li a {
+            border: none;
+            font-size: 13px;
+            min-width: 30px;
+            min-height: 30px;
+            color: #999;
+            margin: 0 2px;
+            line-height: 30px;
+            border-radius: 2px !important;
+            text-align: center;
+            padding: 0 6px;
+        }
+
+        .pagination li a:hover {
+            color: #666;
+        }
+
+        .pagination li.active a {
+            background: #03A9F4;
+        }
+
+        .pagination li.active a:hover {
+            background: #0397d6;
+        }
+
+        .pagination li.disabled i {
+            color: #ccc;
+        }
+
+        .pagination li i {
+            font-size: 16px;
+            padding-top: 6px
+        }
+
+        .hint-text {
+            float: left;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            // Retrieve the email from the session
+            const userEmail = sessionStorage.getItem('loggedInUser');
+
+            function isLoggedIn() {
+                // Check if a user is logged in by retrieving the username from session storage
+                var loggedInUserName = sessionStorage.getItem("loggedInUser");
+                return loggedInUserName !== null; // Return true if a user is logged in, false otherwise
+            }
+
+            // Function to dynamically generate and display the appropriate navbar
+            function displayNavbar() {
+                // Define HTML for the logged-in and non-logged-in navbars
+
+                var loggedInNavbarHtml = `
+                    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="#">Maize Shop</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarCollapse">
+                                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="all_product.html">Products</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="cart.html">Cart</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="customer_order.html">My Orders</a>
+                                    </li>
+                                  
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="signOutLink" href="#" onclick="signOut()">Sign Out</a>
+                                    </li>
+                                </ul>
+                                <form class="d-flex">
+                                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-outline-success" type="submit">Search</button>
+                                </form>
+                                <a style="color: green;" class="nav-link" href="cart.html"><i class="bi bi-cart-fill fs-4"></i></a>
+
+                            </div>
+                        </div>
+                    </nav>`;
+
+                var nonLoggedInNavbarHtml = `
+                    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="#">Maize Shop</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarCollapse">
+                                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="register.html">Register</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="all_product.html">Menu</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="login.html">Login</a>
+                                    </li>
+                                   
+                                </ul>
+                                <form id="searchForm" class="d-flex">
+                                    <input type="search" class="form-control me-2" id="searchInput" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-outline-success" type="submit">Search</button>
+                                 
+                                </form>
+                                <a style="color: green;" class="nav-link" href="cart.html"><i class="bi bi-cart-fill fs-4"></i></a>
+
+                            </div>
+                        </div>
+                    </nav>`;
+
+                if (isLoggedIn()) {
+                    $('#navbarContainer').html(loggedInNavbarHtml);
+                } else {
+                    $('#navbarContainer').html(nonLoggedInNavbarHtml);
+                }
+            }
+
+            // Display the appropriate navbar when the page loads
+            displayNavbar();
+
+
+
+            // Function to fetch and display order details
+            function fetchOrderDetails(email) {
+                $.get(`/orders/user/${email}/details`, function (orderDetails) {
+                    var orderList = $('#orderList');
+                    orderList.empty(); // Clear previous order list
+
+                    // Loop through each order detail and append a table row
+                    orderDetails.forEach(function (detail, index) {
+                        var row = $('<tr>');
+                        row.append($('<td>').text(index + 1)); // Index column
+                        row.append($('<td>').text(detail[0])); // Customer username
+                        row.append($('<td>').text(formatDate(detail[1]))); // Order date
+                        row.append($('<td>').html(formatStatus(detail[2]))); // Order status
+                        row.append($('<td>').text('R' + detail[3])); // Net amount
+
+                        // Add cancel action button with bin icon
+                        var cancelBtn = $('<button>').addClass('btn btn-danger btn-sm').html('<i class="bi bi-trash"></i>').attr('title', 'Cancel Order');
+                        cancelBtn.click(function () {
+                            var orderId = detail[4]; // Assuming the order ID is the 5th element in the array
+                            // Send AJAX request to delete the order
+                            $.ajax({
+                                type: 'DELETE',
+                                url: `/orders/${orderId}`,
+                                success: function () {
+                                    // Handle success response
+                                    alert('Order deleted successfully');
+                                    // Redirect to myorder.html
+                                    window.location.href = 'customer_order.html';
+                                },
+                                error: function (xhr, status, error) {
+                                    // Handle error response
+                                    alert('Failed to delete order: ' + xhr.responseText);
+                                }
+                            });
+                        });
+
+                        // Append the cancel button to the row
+                        row.append($('<td>').addClass('d-flex justify-content-center').append(cancelBtn));
+
+                        // Add the row to the table
+                        orderList.append(row);
+                    });
+                });
+            }
+
+
+            // Call the fetchOrderDetails function with the user's email
+            fetchOrderDetails(userEmail);
+
+            // Function to format the date to a standard format
+            function formatDate(dateString) {
+                var date = new Date(dateString);
+                return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+
+            // Function to format the order status with appropriate styles and icons
+            function formatStatus(status) {
+                var statusText;
+                var statusClass;
+
+                switch (status) {
+                    case 'PENDING':
+                        statusText = 'Pending';
+                        statusClass = 'text-warning';
+                        break;
+                    case 'PROCESSING':
+                        statusText = 'Processing';
+                        statusClass = 'text-info';
+                        break;
+                    case 'SHIPPED':
+                        statusText = 'Shipped';
+                        statusClass = 'text-primary';
+                        break;
+                    case 'DELIVERED':
+                        statusText = 'Delivered';
+                        statusClass = 'text-success';
+                        break;
+                    case 'CANCELLED':
+                        statusText = 'Cancelled';
+                        statusClass = 'text-danger';
+                        break;
+                    default:
+                        statusText = 'Cancelled';
+                        statusClass = 'text-danger';
+
+                }
+
+                return `<span class="status ${statusClass}">&bull;</span> ${statusText}`;
+            }
+        });
+        function signOut() {
+            // Remove the username from session storage
+            sessionStorage.removeItem("loggedInUser");
+            // Redirect to the login page
+            window.location.href = "index.html";
+        }
+
+    </script>
+</head>
+
+<body>
+    <header>
+        <div id="navbarContainer"></div> <!-- Container for the navbar -->
+    </header>
+    <div class="container">
+        <div class="table-wrapper">
+            <!-- Add your table structure here -->
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h2>Order <b>Details</b></h2>
+                    </div>
+
+                </div>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer</th>
+                        <th>Order Date</th>
+                        <th>Status</th>
+                        <th>Net Amount</th>
+                        <th>Action</th>
+
+                    </tr>
+                </thead>
+                <tbody id="orderList">
+                    <!-- Order details will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+<script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</html>

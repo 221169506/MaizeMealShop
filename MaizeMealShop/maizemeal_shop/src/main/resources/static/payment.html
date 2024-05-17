@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/carousel.css">
+    <link rel="stylesheet" href="css/carousel.rtl.css">
+    <link href="admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        /* Navbar Brand */
+        .navbar-brand {
+            font-size: 1.5rem;
+        }
+
+        /* Navbar Links */
+        .navbar-nav .nav-link {
+            font-size: 1.2rem;
+        }
+
+        /* Navbar Toggler Icon */
+        .navbar-toggler-icon {
+            background-color: white;
+        }
+
+        /* Active Link */
+        .navbar-nav .nav-link.active {
+            font-weight: bold;
+        }
+
+        /* Search Input */
+        .form-control {
+            width: 300px;
+            /* Adjust width as needed */
+        }
+
+        /* Search Button */
+        .btn-outline-success {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbarContainer"></div>
+
+    <div class="container">
+        <h1 class="mt-4 mb-4">Enter Address and Payment</h1>
+
+        <!-- Address Details -->
+        <div class="card mb-4">
+            <div class="card-header">
+                Address Details
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary" id="addEditAddressButton" data-toggle="modal"
+                        data-target="#addressModal">
+                        Add/Edit Address
+                    </button>
+                </div>
+                <!-- Display addresses if available -->
+                <div id="addressList"></div>
+                <button type="button" class="btn btn-danger mt-3" id="deleteAddressButton">Delete Selected</button>
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                Payment Information
+            </div>
+            <div class="card-body">
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" class="form-control" id="cardNumber" name="cardNumber" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="expiryDate">Expiry Date</label>
+                            <input type="text" class="form-control" id="expiryDate" name="expiryDate" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="cvv">CVV</label>
+                            <input type="text" class="form-control" id="cvv" name="cvv" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="submitPaymentButton">Submit Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Address Modal -->
+    <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addressModalLabel">Add/Edit Address</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addressForm">
+                        <div class="form-group">
+                            <label for="houseNumber">House Number</label>
+                            <input type="text" class="form-control" id="house_number" name="house_number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="streetName">Street Name</label>
+                            <input type="text" class="form-control" id="street_name" name="street_name" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="city">City</label>
+                                <input type="text" class="form-control" id="city" name="city" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="postalCode">Postal Code</label>
+                                <input type="text" class="form-control" id="postal_code" name="postal_code" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="province">Province</label>
+                                <input type="text" class="form-control" id="province" name="province" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-block" id="addUpdateAddressButton">Submit
+                            Address</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="addressAddedModal" tabindex="-1" role="dialog" aria-labelledby="addressAddedModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addressAddedModalLabel">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Address added successfully.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Failure Modal -->
+    <div class="modal fade" id="addressFailedModal" tabindex="-1" role="dialog"
+        aria-labelledby="addressFailedModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addressFailedModalLabel">Error</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Failed to add address. Please try again later.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <script>
+        // Function to determine if the user is logged in
+        function isLoggedIn() {
+            // Check if a user is logged in by retrieving the username from session storage
+            var loggedInUserName = sessionStorage.getItem("loggedInUser");
+            return loggedInUserName !== null; // Return true if a user is logged in, false otherwise
+        }
+
+        // Function to dynamically generate and display the appropriate navbar
+        function displayNavbar() {
+            // Define HTML for the logged-in and non-logged-in navbars
+            var loggedInNavbarHtml = `
+                <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="#">Maize Shop</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarCollapse">
+                            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="all_product.html">Products</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="cart.html">Cart</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="customer_order.html">My Orders</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="signOutLink" href="#" onclick="signOut()">Sign Out</a>
+                                </li>
+                            </ul>
+                            <form class="d-flex">
+                                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-success" type="submit">Search</button>
+                            </form>
+                            <a style="color: green;" class="nav-link" href="cart.html"><i class="bi bi-cart-fill fs-4"></i></a>
+
+                        </div>
+                    </div>
+                </nav>`;
+
+            var nonLoggedInNavbarHtml = `
+                <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="#">Maize Shop</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarCollapse">
+                            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="register.html">Register</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="all_product.html">Menu</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="login.html">Login</a>
+                                </li>
+                               
+                            </ul>
+                            <form id="searchForm" class="d-flex">
+                                <input type="search" class="form-control me-2" id="searchInput" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-success" type="submit">Search</button>
+                             
+                            </form>
+                            <a style="color: green;" class="nav-link" href="cart.html"><i class="bi bi-cart-fill fs-4"></i></a>
+
+                        </div>
+                    </div>
+                </nav>`;
+
+            if (isLoggedIn()) {
+                $('#navbarContainer').html(loggedInNavbarHtml);
+            } else {
+                $('#navbarContainer').html(nonLoggedInNavbarHtml);
+            }
+        }
+
+        // Display the appropriate navbar when the page loads
+        displayNavbar();
+
+        function signOut() {
+            // Remove the username from session storage
+            sessionStorage.removeItem("loggedInUser");
+            // Redirect to the login page
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <script>
+        // Retrieve the email from the session
+        const userEmail = sessionStorage.getItem('loggedInUser');
+
+        // Set the email as the value of the email input field
+        document.getElementById('email').value = userEmail;
+
+        // Function to handle adding or updating addresses
+        $('#addUpdateAddressButton').click(function () {
+            // Extract address data from the modal form
+            const addressData = {
+                houseNumber: $('#house_number').val(),
+                streetName: $('#street_name').val(),
+                city: $('#city').val(),
+                postalCode: $('#postal_code').val(),
+                province: $('#province').val(),
+                email: userEmail // Assuming you want to associate the address with the logged-in user
+            };
+
+            // Determine whether to add or update the address based on the presence of an address ID
+            const addressId = $('#addressId').val(); // Assuming you have an input field in the modal for the address ID
+
+            // Send an HTTP request to the backend API
+            const url = addressId ? `/api/address/update/${addressId}` : '/api/address/add';
+            const method = addressId ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(addressData)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        $('#addressAddedModal').modal('show');
+                        fetchAndDisplayAddresses(userEmail);
+                    } else {
+                        throw new Error('Failed to add/update address.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding/updating address:', error);
+                    $('#addressFailedModal').modal('show');
+                });
+        });
+
+        // Function to display addresses
+        function displayAddresses(addresses) {
+            const addressListContainer = document.getElementById('addressList');
+            if (addresses.length > 0) {
+                let html = '<h4>Addresses:</h4><ul>';
+                addresses.slice(0, 2).forEach(address => {
+                    html += `<li><input type="checkbox" class="address-checkbox" value="${address.id}">${address.houseNumber} ${address.streetName}, ${address.city}, ${address.province}, ${address.postalCode}</li>`;
+                });
+                html += '</ul>';
+                addressListContainer.innerHTML = html;
+            } else {
+                addressListContainer.innerHTML = '<p>No addresses available.</p>';
+            }
+        }
+
+        // Function to fetch and display addresses
+        function fetchAndDisplayAddresses(email) {
+            fetch(`/api/address/all?email=${email}`)
+                .then(response => response.json())
+                .then(data => displayAddresses(data))
+                .catch(error => console.error('Error fetching addresses:', error));
+        }
+
+        // Call fetchAndDisplayAddresses function when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchAndDisplayAddresses(userEmail);
+        });
+
+        // Function to handle deleting addresses
+        $('#deleteAddressButton').click(function () {
+            const selectedCheckboxes = document.querySelectorAll('.address-checkbox:checked');
+            if (selectedCheckboxes.length > 0) {
+                const addressId = selectedCheckboxes[0].value; // Only consider the first selected address
+                fetch(`/api/address/delete/${addressId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            $('#addressAddedModal').modal('show');
+                            fetchAndDisplayAddresses(userEmail);
+                        } else {
+                            throw new Error('Failed to delete address.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting address:', error);
+                        $('#addressFailedModal').modal('show');
+                    });
+            }
+        });
+        // Function to validate payment and proceed to checkout
+        $('#submitPaymentButton').click(function (event) {
+            const cardNumber = $('#cardNumber').val();
+            const expiryDate = $('#expiryDate').val();
+            const cvv = $('#cvv').val();
+            const selectedCheckbox = document.querySelector('.address-checkbox:checked');
+            const totalAmount = parseFloat(sessionStorage.getItem('totalAmount') || 0);
+            const userEmail = sessionStorage.getItem('loggedInUser');
+
+            if (!validatePayment(cardNumber, expiryDate, cvv)) {
+                // Display error message for invalid payment
+                event.preventDefault();
+                alert('Invalid payment information. Please check your card details.');
+            } else if (selectedCheckbox) {
+                // Proceed to checkout if payment is valid and address checkbox is selected
+                fetch(`/cart/checkout?totalAmount=${totalAmount}&userEmail=${userEmail}`, {
+                    method: 'POST'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            $('#addressAddedModal').modal('show');
+                            // Additional actions after successful checkout
+                            alert('Successfully placed an order.');
+                        } else {
+                            throw new Error('Failed to checkout.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error checking out:', error);
+                        $('#addressFailedModal').modal('show');
+                    });
+            } else {
+                // Display error message for missing address
+                event.preventDefault();
+                alert('Please select an address to proceed with checkout.');
+            }
+        });
+
+        // Function to validate payment details
+        function validatePayment(cardNumber, expiryDate, cvv) {
+            // Add your validation logic here
+            return true; // Placeholder, replace with actual validation
+        }
+    </script>
+
+</body>
+
+</html>

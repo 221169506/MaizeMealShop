@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/carousel.css">
+    <link rel="stylesheet" href="css/carousel.rtl.css">
+    <link href="admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        /* .gradient-custom {
+            background: #6a11cb;
+            background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+            background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+        } */
+
+        /* Navbar Brand */
+        .btn i {
+            vertical-align: middle;
+            /* Align icons vertically */
+        }
+
+
+        .navbar-brand {
+            font-size: 1.5rem;
+        }
+
+        /* Navbar Links */
+        .navbar-nav .nav-link {
+            font-size: 1.2rem;
+        }
+
+        /* Navbar Toggler Icon */
+        .navbar-toggler-icon {
+            background-color: white;
+        }
+
+        /* Active Link */
+        .navbar-nav .nav-link.active {
+            font-weight: bold;
+        }
+
+        /* Search Input */
+        .form-control {
+            width: 100%;
+            /* Adjust width as needed */
+        }
+
+        /* Search Button */
+        .btn-outline-success {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar container -->
+    <div id="navbarContainer"></div>
+
+    <section class="h-100 gradient-custom">
+        <div class="container py-5 my-5"> <!-- Increased padding and margin -->
+            <div class="row d-flex justify-content-center my-4">
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-header py-3">
+                            <h5 class="mb-0">Cart items</h5>
+                        </div>
+                        <div class="card-body" id="cart-items">
+                            <!-- Products will be displayed here dynamically -->
+                        </div>
+                    </div>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <p><strong>Expected shipping delivery</strong></p>
+                            <p class="mb-0" id="shipping-dates"></p>
+                            <p id="message"></p>
+                        </div>
+                    </div>
+                    <div class="card mb-4 mb-lg-0">
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush" id="summary-list">
+                                <!-- Summary list will be updated dynamically -->
+                            </ul>
+
+                            <button type="button" data-mdb-button-init data-mdb-ripple-init
+                                class="btn btn-primary btn-lg btn-block">
+                                Go to checkout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Function to calculate delivery date two days from now excluding Saturdays and Sundays
+        function calculateDeliveryDate() {
+            const today = new Date();
+            const twoDaysFromNow = new Date(today);
+            twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 2); // Add two days
+
+            // Exclude Saturdays and Sundays
+            while (twoDaysFromNow.getDay() === 0 || twoDaysFromNow.getDay() === 6) {
+                twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 1);
+            }
+
+            return twoDaysFromNow.toLocaleDateString('en-US');
+        }
+
+        // Update the delivery date on the page
+        document.getElementById('shipping-dates').textContent = calculateDeliveryDate();
+        // Display a message indicating that some orders might be delivered before the displayed date
+        const message = "Please note that some orders might be delivered before the displayed date. We will keep in touch.";
+        document.getElementById('message').textContent = message;
+
+        let subtotal = 0;
+        let totalAmount = 0;
+
+        // Function to handle checkout
+        function checkout() {
+            // Check if user is logged in
+            const user = sessionStorage.getItem('loggedInUser');
+            if (!user) {
+                // Redirect to payment page if user is not logged in
+                window.location.href = 'login.html';
+                return;
+            }
+            // Here, you can choose to do additional client-side validation or processing if needed
+
+            // Retrieve total amount from sessionStorage
+            var totalAmount = sessionStorage.getItem('totalAmount');
+
+            // You may choose to do additional client-side processing here if needed before proceeding to payment
+            // For example, you can display a confirmation modal to the user before redirecting to payment.html
+            // Once the user confirms, you can proceed with the redirection.
+
+            // Store totalAmount back in the session
+            sessionStorage.setItem('totalAmount', totalAmount);
+
+            // Redirect to payment page
+            window.location.href = 'payment.html';
+        }
+
+        // Attach the checkout function to the checkout button
+        document.querySelector('button[data-mdb-button-init]').addEventListener('click', checkout);
+
+        // Function to remove item from cart
+        function removeFromCart(productId) {
+            fetch('/cart/remove?productId=' + productId, {
+                method: 'POST'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Item removed successfully, fetch updated product list
+                        fetchProductList();
+                    } else {
+                        console.error('Failed to remove item from cart.');
+                    }
+                })
+                .catch(error => console.error('Error removing item from cart:', error));
+        }
+
+        // Function to update quantity of item in cart
+        function updateQuantity(productId, action) {
+            let input = document.getElementById(`quantity-${productId}`);
+            let quantity = parseInt(input.value);
+
+            if (action === '+') {
+                input.value = quantity + 1;
+            } else if (action === '-') {
+                if (quantity > 1) {
+                    input.value = quantity - 1;
+                } else {
+                    console.error('Quantity cannot be less than 1.');
+                    return;
+                }
+            }
+
+            fetch('/cart/update?productId=' + productId + '&quantity=' + input.value, {
+                method: 'POST'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Cart updated successfully, fetch updated product list
+                        fetchProductList();
+                    } else {
+                        console.error('Failed to update cart.');
+                    }
+                })
+                .catch(error => console.error('Error updating cart:', error));
+        }
+
+        // Fetch products from the server and display them
+        function fetchProductList() {
+            fetch('/cart/products')
+                .then(response => response.json())
+                .then(products => {
+                    const cartItemsContainer = document.getElementById('cart-items');
+                    cartItemsContainer.innerHTML = '';
+
+                    subtotal = 0;
+                    products.forEach(product => {
+                        const productCard = document.createElement('div');
+                        productCard.classList.add('row', 'mb-3');
+
+                        const productSubtotal = product.price * product.stockQuantity;
+                        subtotal += productSubtotal;
+
+                        productCard.innerHTML = `
+                            <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                                <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                    data-mdb-ripple-color="light">
+                                    <img src="data:image/jpeg;base64,${product.base64Image}"
+                                        class="w-100" alt="${product.name}" />
+                                    <a href="#!">
+                                        <div class="mask"
+                                            style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                                <p><strong>${product.name}</strong></p>
+                                <p>Size: ${product.size}</p>
+                                <p>Price: R${product.price.toFixed(2)}</p>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                                <div class="d-flex mb-4" style="max-width: 300px">
+                                    <button class="btn btn-primary me-2" onclick="updateQuantity(${product.productId}, '-')">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <div class="form-outline flex-grow-1"> <!-- Added flex-grow-1 class -->
+                                        <input type="number" id="quantity-${product.productId}" min="1" class="form-control" value="${product.stockQuantity}" />
+                                        <label class="form-label" for="quantity-${product.productId}">Quantity</label>
+                                    </div>
+                                    <button class="btn btn-primary ms-2" onclick="updateQuantity(${product.productId}, '+')">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <button class="btn btn-danger mt-3"
+                                    onclick="removeFromCart(${product.productId})">Remove</button>
+                            </div>
+                        `;
+                        cartItemsContainer.appendChild(productCard);
+                    });
+
+                    // Update subtotal and total amount
+                    updateSummary();
+                })
+                .catch(error => console.error('Error fetching products:', error));
+        }
+
+        // Function to update summary section with subtotal and total amount
+        function updateSummary() {
+            totalAmount = subtotal !== 0 ? subtotal + 25 : 0;
+            //Store in a session
+            sessionStorage.setItem('totalAmount', totalAmount);
+
+            const summaryList = document.getElementById('summary-list');
+            summaryList.innerHTML = `
+                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                    Products Total Amount
+                    <span>R${subtotal.toFixed(2)}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Delivery Fee
+                    <span>R25</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                    <div>
+                        <strong>Total amount</strong>
+                        <strong>
+                            <p class="mb-0">(including
+                                VAT)</p>
+                        </strong>
+                    </div>
+                    <span><strong>R${totalAmount.toFixed(2)}</strong></span>
+                </li>
+            `;
+        }
+
+        // Fetch the products list when the page loads
+        fetchProductList();
+
+        // Navbar related code
+
+        // Function to determine if the user is logged in
+        function isLoggedIn() {
+            // Check if a user is logged in by retrieving the username from session storage
+            var loggedInUserName = sessionStorage.getItem("loggedInUser");
+            return loggedInUserName !== null; // Return true if a user is logged in, false otherwise
+        }
+
+        // Function to dynamically generate and display the appropriate navbar
+        function displayNavbar() {
+            // Define HTML for the logged-in and non-logged-in navbars
+            var loggedInNavbarHtml = `
+                    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="#">Maize Shop</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarCollapse">
+                                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="all_product.html">Products</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="cart.html">Cart</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="customer_order.html">My Orders</a>
+                                    </li>
+                                   
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="signOutLink" href="#" onclick="signOut()">Sign Out</a>
+                                    </li>
+                                </ul>
+                                <form class="d-flex">
+                                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-outline-success" type="submit">Search</button>
+                                </form>
+                                <a style="color: green;" class="nav-link" href="cart.html"><i class="bi bi-cart-fill fs-4"></i></a>
+
+                            </div>
+                        </div>
+                    </nav>`;
+
+
+            var nonLoggedInNavbarHtml = `
+                    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="#">Maize Shop</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarCollapse">
+                                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="register.html">Register</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="all_product.html">Menu</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="login.html">Login</a>
+                                    </li>
+                                   
+                                </ul>
+                                <form id="searchForm" class="d-flex">
+                                    <input type="search" class="form-control me-2" id="searchInput" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-outline-success" type="submit">Search</button>
+                                 
+                                </form>
+                                <a style="color: green;" class="nav-link" href="cart.html"><i class="bi bi-cart-fill fs-4"></i></a>
+
+                            </div>
+                        </div>
+                    </nav>`;
+
+            if (isLoggedIn()) {
+                $('#navbarContainer').html(loggedInNavbarHtml);
+            } else {
+                $('#navbarContainer').html(nonLoggedInNavbarHtml);
+            }
+        }
+
+        // Display the appropriate navbar when the page loads
+        displayNavbar();
+
+        // Function to sign out
+        function signOut() {
+            // Remove the username from session storage
+            sessionStorage.removeItem("loggedInUser");
+            // Redirect to the login page
+            window.location.href = "index.html";
+        }
+    </script>
+    <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

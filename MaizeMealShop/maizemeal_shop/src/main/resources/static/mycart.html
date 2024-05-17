@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        /* Add your CSS styles here */
+        .product-container {
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        .product-image {
+            max-width: 100px;
+            max-height: 100px;
+            margin-right: 10px;
+        }
+        .product-details {
+            display: inline-block;
+            vertical-align: top;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shopping Cart</h1>
+
+    <div id="cart-items">
+        <!-- Products will be displayed here dynamically -->
+    </div>
+
+    <script>
+        function removeFromCart(productId){
+        fetch('/cart/remove?productId=' + productId, {
+            method: 'POST'
+        })
+        .then(response => {
+            if (response.ok) {
+                // Item removed successfully, fetch updated product list
+                fetchProductList();
+            } else {
+                console.error('Failed to remove item from cart.');
+            }
+        })
+        .catch(error => console.error('Error removing item from cart:', error));
+    }
+    
+        // Function to update quantity of item in cart
+        function updateQuantity(productId, action) {
+            let quantity = parseInt(document.getElementById(`quantity-${productId}`).value);
+    
+            if (action === '+') {
+                quantity += 1;
+            } else if (action === '-') {
+                if (quantity > 1) {
+                    quantity -= 1;
+                } else {
+                    console.error('Quantity cannot be less than 1.');
+                    return;
+                }
+            }
+    
+            fetch('/cart/update?productId=' + productId + '&quantity=' + quantity, {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Cart updated successfully, fetch updated product list
+                    fetchProductList();
+                } else {
+                    console.error('Failed to update cart.');
+                }
+            })
+            .catch(error => console.error('Error updating cart:', error));
+        }
+    
+        // Fetch products from the server and display them
+        function fetchProductList() {
+            fetch('/cart/products')
+                .then(response => response.json())
+                .then(products => {
+                    const cartItemsContainer = document.getElementById('cart-items');
+                    cartItemsContainer.innerHTML = '';
+    
+                    products.forEach(product => {
+                        const productContainer = document.createElement('div');
+                        productContainer.classList.add('product-container');
+    
+                        // Product Image
+                        const productImage = document.createElement('img');
+                        productImage.src = 'data:image/jpeg;base64,' + product.base64Image;
+                        productImage.alt = product.name;
+                        productImage.classList.add('product-image');
+                        productContainer.appendChild(productImage);
+    
+                        // Product Details
+                        const productDetails = document.createElement('div');
+                        productDetails.classList.add('product-details');
+    
+                        const productName = document.createElement('p');
+                        productName.textContent = 'Name: ' + product.name;
+                        productDetails.appendChild(productName);
+    
+                        const productSize = document.createElement('p');
+                        productSize.textContent = 'Size: ' + product.size;
+                        productDetails.appendChild(productSize);
+    
+                        const productPrice = document.createElement('p');
+                        productPrice.textContent = 'Price: $' + product.price.toFixed(2);
+                        productDetails.appendChild(productPrice);
+    
+                        // Quantity input field
+                        const quantityInput = document.createElement('input');
+                        quantityInput.type = 'number';
+                        quantityInput.value = product.stockQuantity;
+                        quantityInput.min = '1';
+                        quantityInput.id = `quantity-${product.product_id}`;
+                        productDetails.appendChild(quantityInput);
+    
+                        // Add and remove buttons
+                        const addButtonQuantity = document.createElement('button');
+                        addButtonQuantity.textContent = '+';
+                        addButtonQuantity.addEventListener('click', () => updateQuantity(product.product_id, '+'));
+                        productDetails.appendChild(addButton);
+    
+                        const removeButtonQuantity = document.createElement('button');
+                        removeButtonQuantity.textContent = '-';
+                        removeButtonQuantity.addEventListener('click', () => updateQuantity(product.product_id, '-'));
+                        productDetails.appendChild(removeButton);
+    
+                        productContainer.appendChild(productDetails);
+    
+                        // Remove button
+                        const removeProductButton = document.createElement('button');
+                        removeProductButton.textContent = 'Remove';
+                        removeProductButton.addEventListener('click', () => removeFromCart(product.product_id));
+                        productDetails.appendChild(removeProductButton);
+
+                        productContainer.appendChild(productDetails);
+                        cartItemsContainer.appendChild(productContainer);
+                        });
+                })
+                .catch(error => console.error('Error fetching products:', error));
+        }
+    
+        fetchProductList();
+    </script>
+    
+</body>
+</html>

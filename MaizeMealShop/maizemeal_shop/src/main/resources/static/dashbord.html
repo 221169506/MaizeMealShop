@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to Your Dashboard, <span id="loggedInUserName"></span>!</h1>
+    <!-- Other dashboard content here -->
+</body>
+<script>
+    // Retrieve logged-in user's name from session and display it
+    var loggedInUserName = sessionStorage.getItem("loggedInUser");
+    document.getElementById("loggedInUserName").innerText = loggedInUserName;
+</script>
+</html>

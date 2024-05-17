@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Shopping Cart</title>
+        <link rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <style>
+        .gradient-custom {
+            background: #6a11cb;
+            background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+            background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+        }
+    </style>
+    </head>
+    <body>
+        <div id="navbarContainer"></div> <!-- Navbar will be inserted here -->
+
+
+        <section class="h-100 gradient-custom">
+            <div class="container py-5">
+                <div class="row d-flex justify-content-center my-4">
+                    <div class="col-md-8">
+                        <div class="card mb-4">
+                            <div class="card-header py-3">
+                                <h5 class="mb-0">Cart - 2 items</h5>
+                            </div>
+                            <div class="card-body" id="cart-items">
+                                <!-- Products will be displayed here dynamically -->
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <p><strong>Expected shipping
+                                        delivery</strong></p>
+                                <p class="mb-0">12.10.2020 - 14.10.2020</p>
+                            </div>
+                        </div>
+                        <div class="card mb-4 mb-lg-0">
+                            <div class="card-body">
+                                <p><strong>We accept</strong></p>
+                                <img class="me-2" width="45px"
+                                    src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
+                                    alt="Visa" />
+                                <img class="me-2" width="45px"
+                                    src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
+                                    alt="American Express" />
+                                <img class="me-2" width="45px"
+                                    src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
+                                    alt="Mastercard" />
+                                <img class="me-2" width="45px"
+                                    src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.webp"
+                                    alt="PayPal acceptance mark" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="card-header py-3">
+                                <h5 class="mb-0">Summary</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li
+                                        class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                        Products
+                                        <span>$53.98</span>
+                                    </li>
+                                    <li
+                                        class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                        Shipping
+                                        <span>Gratis</span>
+                                    </li>
+                                    <li
+                                        class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                        <div>
+                                            <strong>Total amount</strong>
+                                            <strong>
+                                                <p class="mb-0">(including
+                                                    VAT)</p>
+                                            </strong>
+                                        </div>
+                                        <span><strong>$53.98</strong></span>
+                                    </li>
+                                </ul>
+
+                                <button type="button" data-mdb-button-init
+                                    data-mdb-ripple-init
+                                    class="btn btn-primary btn-lg btn-block">
+                                    Go to checkout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            
+        // Function to remove item from cart
+        function removeFromCart(productId){
+            fetch('/cart/remove?productId=' + productId, {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Item removed successfully, fetch updated product list
+                    fetchProductList();
+                } else {
+                    console.error('Failed to remove item from cart.');
+                }
+            })
+            .catch(error => console.error('Error removing item from cart:', error));
+        }
+
+
+        // Function to update quantity of item in cart
+        function updateQuantity(productId, action) {
+            let input = document.getElementById(`quantity-${productId}`);
+            let quantity = parseInt(input.value);
+
+            if (action === '+') {
+                input.value = quantity + 1;
+            } else if (action === '-') {
+                if (quantity > 1) {
+                    input.value = quantity - 1;
+                } else {
+                    console.error('Quantity cannot be less than 1.');
+                    return;
+                }
+            }
+
+            fetch('/cart/update?productId=' + productId + '&quantity=' + input.value, {
+                    method: 'POST'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Cart updated successfully, fetch updated product list
+                        fetchProductList();
+                    } else {
+                        console.error('Failed to update cart.');
+                    }
+                })
+                .catch(error => console.error('Error updating cart:', error));
+        }
+
+        // Fetch products from the server and display them
+        function fetchProductList() {
+            fetch('/cart/products')
+                .then(response => response.json())
+                .then(products => {
+                    const cartItemsContainer = document.getElementById('cart-items');
+                    cartItemsContainer.innerHTML = '';
+
+                    products.forEach(product => {
+                        const productCard = document.createElement('div');
+                        productCard.classList.add('row', 'mb-3');
+
+                        productCard.innerHTML = `
+                            <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                                <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                    data-mdb-ripple-color="light">
+                                    <img src="data:image/jpeg;base64,${product.base64Image}"
+                                        class="w-100" alt="${product.name}" />
+                                    <a href="#!">
+                                        <div class="mask"
+                                            style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                                <p><strong>${product.name}</strong></p>
+                                <p>Size: ${product.size}</p>
+                                <p>Price: $${product.price.toFixed(2)}</p>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                                <div class="d-flex mb-4" style="max-width: 300px">
+                                    <button class="btn btn-primary px-3 me-2"
+                                        onclick="updateQuantity(${product.productId}, '-')">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <div class="form-outline">
+                                        <input type="number" id="quantity-${product.productId}" min="1"
+                                            class="form-control" value="${product.stockQuantity}" />
+                                        <label class="form-label" for="quantity-${product.productId}">Quantity</label>
+                                    </div>
+                                    <button class="btn btn-primary px-3 ms-2"
+                                        onclick="updateQuantity(${product.productId}, '+')">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <button class="btn btn-danger mt-3"
+                                    onclick="removeFromCart(${product.productId})">Remove</button>
+                            </div>
+                        `;
+                        cartItemsContainer.appendChild(productCard);
+                    });
+                })
+                .catch(error => console.error('Error fetching products:', error));
+        }
+
+        fetchProductList();
+    </script>
+    </body>
+</html>

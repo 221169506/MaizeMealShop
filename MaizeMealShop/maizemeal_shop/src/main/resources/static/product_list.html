@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <h2 class="mb-4">Products</h2>
+        <div class="row" id="productGrid">
+            <!-- Products will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Function to fetch products and display them
+            function fetchProducts() {
+                $.get('/products', function (products) {
+                    var productGrid = $('#productGrid');
+                    productGrid.empty(); // Clear previous product grid
+
+                    // Loop through each product and append it to the grid
+                    products.forEach(function (product) {
+                        var productCard = `
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <img src="data:image/jpeg;base64,${product.base64Image}" class="card-img-top" alt="${product.name}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${product.name}</h5>
+                                    <p class="card-text">${product.description}</p>
+                                    <p class="card-text">Size: ${product.size}</p>
+                                    <p class="card-text">Stock Quantity: ${product.stockQuantity}</p>
+                                    <p class="card-text">Price: ${product.price}</p>
+                                    <button class="btn btn-primary addToCartBtn" data-product-id="${product.productId}">Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                        productGrid.append(productCard);
+                    });
+
+                    // Add click event handler to Add to Cart buttons
+                    $('.addToCartBtn').click(function () {
+                        var productId = $(this).data('product-id');
+                        // Implement your add to cart logic here
+                        console.log('Adding product with ID ' + productId + ' to cart');
+                    });
+                });
+            }
+
+            // Fetch products when the page loads
+            fetchProducts();
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Orders</title>
+    <!-- Bootstrap CSS -->
+
+    <!-- Favicons -->
+    <link href="admin/assets/img/favicon.png" rel="icon">
+    <link href="admin/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="admin/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="admin/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="admin/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="admin/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="admin/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="admin/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="admin/assets/css/style.css" rel="stylesheet">
+    <style>
+        .img-thumbnail {
+            max-width: 100px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="admin_dashbord.html" class="logo d-flex align-items-center">
+                <img src="admin/assets/img/logo.png" alt="">
+                <span class="d-none d-lg-block">Admin</span>
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div><!-- End Logo -->
+
+        <div class="search-bar">
+            <form class="search-form d-flex align-items-center">
+                <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+            </form>
+        </div><!-- End Search Bar -->
+
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+
+                <li class="nav-item d-block d-lg-none">
+                    <a class="nav-link nav-icon search-bar-toggle " href="#">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </li><!-- End Search Icon-->
+            </ul>
+        </nav><!-- End Icons Navigation -->
+
+    </header><!-- End Header -->
+
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="admin_dashbord.html">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Admin Tools</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="view_users.html">
+                            <i class="bi bi-circle"></i><span>Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="view_products.html">
+                            <i class="bi bi-circle"></i><span>Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="view_orders.html">
+                            <i class="bi bi-circle"></i><span>Orders</span>
+                        </a>
+                    </li>
+
+                </ul>
+
+    </aside><!-- End Sidebar-->
+    <main id="main" class="main">
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Orders</h5>
+
+                            <!-- End Table with stripped rows -->
+
+                            <table class="table datatable">
+
+                                <thead>
+                                    <tr>
+                                        <th><b>Order ID</b></th>
+                                        <th>Customer Email</th>
+                                        <th>Order Date</th>
+                                        <th>Total Amount</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="orderList">
+                                    <!-- Order items will be dynamically added here -->
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+    </main><!-- End #main -->
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+
+    <!-- Script for handling status dropdown -->
+    <script>
+        $(document).ready(function () {
+
+
+            // Function to handle status change
+            function handleStatusChange(orderId, newStatus) {
+                // Send an AJAX request to update the status
+                $.ajax({
+                    url: '/orders/' + orderId + '/status',
+                    type: 'PUT',
+                    data: { status: newStatus }, // Pass the new status as data
+                    success: function (response) {
+                        // Handle success
+                        console.log('Order status updated successfully:', response);
+                        alert('Order status updated successfully.');
+
+                        // You may perform additional actions after successful status update, such as refreshing the order list
+                        fetchOrders(); // Refresh the order list
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors
+                        console.error('Error updating order status:', error);
+                        // You may display an error message or perform other actions as needed
+                        alert('Error updating order status. Please try again.');
+                    }
+                });
+            }
+
+            // Function to format datetime into a standard format
+            function formatDatetime(datetimeString) {
+                // Parse the datetime string
+                var date = new Date(datetimeString);
+
+                // Format the datetime using toLocaleString() or other desired method
+                return date.toLocaleString(); // Adjust the format as needed
+            }
+
+            function fetchOrders() {
+                $.get('/orders', function (orders) {
+                    var orderList = $('#orderList');
+                    orderList.empty(); // Clear previous order list
+
+                    // Loop through each order and append a table row
+                    orders.forEach(function (order) {
+                        var row = $('<tr>');
+                        row.append($('<td>').text(order.orderId));
+                        row.append($('<td>').text(order.user.email));
+
+                        // Format and append the datetime
+                        var formattedDatetime = formatDatetime(order.createdAt);
+                        row.append($('<td>').text(formattedDatetime));
+
+                        row.append($('<td>').text('R ' +order.totalPrice));
+
+                        // Create a cell for status
+                        var statusCell = $('<td>');
+
+                        // Create a dropdown for status
+                        var statusDropdown = $('<select>').addClass('form-select').change(function () {
+                            handleStatusChange(order.orderId, $(this).val());
+                        });
+
+                        // Populate dropdown options
+                        var statusOptions = ['PENDING', 'DELIVERED', 'CANCELED'];
+                        statusOptions.forEach(function (option) {
+                            statusDropdown.append($('<option>').val(option).text(option));
+                        });
+
+                        // Set initial value based on order status
+                        statusDropdown.val(order.status);
+
+                        // Append dropdown to status cell
+                        statusCell.append(statusDropdown);
+
+                        // Add button for updating status
+                        var updateStatusButton = $('<button>').addClass('btn btn-primary btn-sm').text('Update Status').click(function () {
+                            handleStatusChange(order.orderId, statusDropdown.val());
+                        });
+
+                        // Append status cell and update button to the row
+                        row.append(statusCell);
+                        row.append($('<td>').append(updateStatusButton));
+
+                        // Append row to the order list
+                        orderList.append(row);
+                    });
+                });
+            }
+
+
+            // Fetch and display orders when the page loads
+            fetchOrders();
+        });
+
+    </script>
+
+    <!-- Vendor JS Files -->
+    <script src="admin/assets/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Template Main JS File -->
+    <script src="admin/assets/js/main.js"></script>
+
+</body>
+
+</html>
