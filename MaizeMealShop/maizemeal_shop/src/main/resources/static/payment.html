@@ -71,6 +71,7 @@
         </div>
 
         <!-- Payment Form -->
+        <!-- Payment Form -->
         <div class="card mb-4">
             <div class="card-header">
                 Payment Information
@@ -387,20 +388,54 @@
                     });
             }
         });
-        // Function to validate payment and proceed to checkout
-        $('#submitPaymentButton').click(function (event) {
-            const cardNumber = $('#cardNumber').val();
-            const expiryDate = $('#expiryDate').val();
-            const cvv = $('#cvv').val();
-            const selectedCheckbox = document.querySelector('.address-checkbox:checked');
-            const totalAmount = parseFloat(sessionStorage.getItem('totalAmount') || 0);
-            const userEmail = sessionStorage.getItem('loggedInUser');
+        $(document).ready(function () {
+            $('#submitPaymentButton').click(function (event) {
+                event.preventDefault(); // Prevent the default form submission behavior
 
-            if (!validatePayment(cardNumber, expiryDate, cvv)) {
-                // Display error message for invalid payment
-                event.preventDefault();
-                alert('Invalid payment information. Please check your card details.');
-            } else if (selectedCheckbox) {
+                const cardNumber = $('#cardNumber').val();
+                const expiryDate = $('#expiryDate').val();
+                const cvv = $('#cvv').val();
+                const selectedCheckbox = document.querySelector('.address-checkbox:checked');
+                const totalAmount = parseFloat(sessionStorage.getItem('totalAmount') || 0);
+                const userEmail = sessionStorage.getItem('loggedInUser');
+
+                // Validation functions
+                function validateCardNumber(cardNumber) {
+                    const regex = /^\d{10}$/;
+                    return regex.test(cardNumber);
+                }
+
+                function validateExpiryDate(expiryDate) {
+                    const regex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+                    return regex.test(expiryDate);
+                }
+
+                function validateCVV(cvv) {
+                    const regex = /^\d{3}$/;
+                    return regex.test(cvv);
+                }
+
+                // Validate payment information
+                if (!validateCardNumber(cardNumber)) {
+                    alert("Invalid card number. It should be 10 FROM 0-9 digits.");
+                    return;
+                }
+
+                if (!validateExpiryDate(expiryDate)) {
+                    alert("Invalid expiry date. Format should be MM/YY.");
+                    return;
+                }
+
+                if (!validateCVV(cvv)) {
+                    alert("Invalid CVV. It should be 3 digits.");
+                    return;
+                }
+
+                if (!selectedCheckbox) {
+                    alert('Please select an address to proceed with checkout.');
+                    return;
+                }
+
                 // Proceed to checkout if payment is valid and address checkbox is selected
                 fetch(`/cart/checkout?totalAmount=${totalAmount}&userEmail=${userEmail}`, {
                     method: 'POST'
@@ -415,14 +450,11 @@
                         }
                     })
                     .catch(error => {
-                        console.error('Error checking out:', error);
+                        alert('Error checking out.');
+
                         $('#addressFailedModal').modal('show');
                     });
-            } else {
-                // Display error message for missing address
-                event.preventDefault();
-                alert('Please select an address to proceed with checkout.');
-            }
+            });
         });
 
         // Function to validate payment details
